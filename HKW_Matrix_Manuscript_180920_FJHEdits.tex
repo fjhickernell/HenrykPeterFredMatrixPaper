@@ -1,0 +1,748 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[graybox]{svmult}
+% choose options for [] as required from the list  in the Reference Guide
+\usepackage{mathptmx}       % selects Times Roman as basic font
+\usepackage{helvet}         % selects Helvetica as sans-serif font
+\usepackage{courier}        % selects Courier as typewriter font
+%\usepackage{type1cm}        % activate if the above 3 fonts are not available on your system
+\usepackage{makeidx}         % allows index generation
+\usepackage{graphicx}        % standard LaTeX graphics tool
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+\usepackage{amsmath,amssymb,amsfonts}        % AMS math packages
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xspace}
+% see the list of further useful packages in the Reference Guide
+\makeindex             % used for the subject index
+% please use the style svind.ist with your makeindex program
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\allowdisplaybreaks
+
+\usepackage{booktabs}
+
+\DeclareMathOperator*{\argmax}{argmax}  
+
+
+        
+
+\newcommand{\tlambda}{\widetilde{\lambda}}
+\newcommand{\naturals}{\mathbb{N}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\SEWT}{\sigma_{\textup{EWT}}}
+\newcommand{\ALG}{\textup{ALG}\xspace}
+\newcommand{\EXP}{\textup{EXP}\xspace}
+\newcommand{\NOR}{\textup{NOR}\xspace}
+\newcommand{\ABS}{\textup{ABS}\xspace}
+\newcommand{\SPT}{\textup{SPT}\xspace}
+\newcommand{\PT}{\textup{PT}\xspace}
+\newcommand{\QPT}{\textup{QPT}\xspace}
+\newcommand{\WT}{\textup{WT}\xspace}
+\newcommand{\UWT}{\textup{UWT}\xspace}
+\newcommand{\calG}{{\mathcal{G}}}
+\newcommand{\calH}{{\mathcal{H}}}
+\newcommand{\calS}{{\mathcal{S}}}
+\newcommand{\C}{{\mathbb{C}}} % complex numbers
+\newcommand{\F}{{\mathbb{F}}} % field, finite field
+\newcommand{\N}{{\mathbb{N}}} % natural numbers {1, 2, ...}
+\newcommand{\Q}{{\mathbb{Q}}} % rationals
+\newcommand{\R}{{\mathbb{R}}} % reals
+\newcommand{\Z}{{\mathbb{Z}}} % integers
+
+\newcommand{\fh}[1]{{\color{OliveGreen}{#1}}}
+\newcommand{\pk}[1]{{\color{blue}{#1}}}
+\newcommand{\hw}[1]{{\color{purple}{#1}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\title*{Exponential tractability of linear tensor product problems: 
+finitely many positive eigenvalues}
+\titlerunning{Exponential tractability of linear tensor product problems}
+
+% Use \titlerunning{Short Title} for an abbreviated version of
+% your contribution title if the original one is too long
+\author{Fred J. Hickernell, Peter Kritzer, Henryk Wo\'{z}niakowski}
+% Use \authorrunning{Short Title} for an abbreviated version of
+% your contribution title if the original one is too long
+\institute{Fred J. Hickernell \at Center for Interdisciplinary Scientific Computation, Illinois Institute of Technology, \\
+           Pritzker Science Center (LS) 106A, 3105 Dearborn Street, Chicago, IL 60616, USA\\ 
+           \email{hickernell@iit.edu}
+\and Peter Kritzer \at Johann Radon Institute for Computational and Applied Mathematics (RICAM),\\ Austrian Academy of Sciences\\
+     Altenbergerstr. 69, 4040 Linz, Austria\\ \email{peter.kritzer@oeaw.ac.at}
+\and Henryk Wo\'{z}niakowski \at Department of Computer Science, Columbia University,\\ New York, NY, USA\\
+Institute of Applied Mathematics, University of Warsaw,\\
+ul. Banacha 2, 02-097 Warszawa, Poland\\ \email{henryk@cs.columbia.edu}}
+%
+% Use the package "url.sty" to avoid
+% problems with special characters
+% used in your e-mail or web address
+%
+\maketitle
+
+\abstract{In this article we consider the approximation of compact   
+linear operators defined over tensor product Hilbert   
+spaces. We identify conditions on the singular values of the problem 
+under which we can or cannot achieve different notions of exponential tractability.  In particular, we deal 
+with the case where only finitely many of these singular values are different from zero. 
+}
+
+\section{Introduction and Preliminaries}
+\label{sec:intro}
+
+Tractability of multivariate problems is the subject of a considerable number 
+of articles and monographs in the field of Information-Based Complexity.  For an introduction, we refer to the book \cite{TWW88}.  For a recent 
+overview of the state of the art in tractability studies we refer to the 
+trilogy \cite{NW08}--\cite{NW12}. In this article we study tractability in   
+the worst case setting for linear tensor product problems and 
+for algorithms that use finitely many   
+arbitrary continuous linear functionals.    
+
+The information complexity of a compact linear operator   
+$S_d:\calH_d \to \calG_d$ is defined as the minimal number, $n(\varepsilon,S_d)$, of such   
+linear functionals needed to find an $\varepsilon$-approximation. 
+It is natural to ask how the information complexity of a given problem 
+depends on $d$ and $\varepsilon^{-1}$. A problem is called \emph{tractable} if  the information complexity increases with $d$ at a rate that is slower than exponential.  
+
+When the information complexity is no worse than a polynomial function of $\max(1,\varepsilon^{-1})$, different notions of tractability are defined in terms of a relationship between $n(\varepsilon,S_d)$ and some function $T(d,\max(1,\varepsilon^{-1}))$.  This is called algebraic (ALG) tractability.  Different notions of discrepancy and the corresponding $T$ are defined in Table \ref{table:tractDef}.  For a complete overview of a wide range results 
+on algebraic tractability, see \cite{NW08}--\cite{NW12}. 
+
+On the other hand, a relatively recent stream replaces the arguments of $T$ by $(d,1+\log\,\max(1,\varepsilon^{-1}))$. This situation is 
+referred to as exponential (\EXP) tractability, which is the subject of this article. Now the complexity of the problem increases only logarithmically as the error tolerance vanishes.  Again refer to Table \ref{table:tractDef}. 
+
+General compact linear multivariate problems have been studied 
+in the recent article \cite{KW18}. Here, we deal with the case of    
+tensor product problems for which the singular values of a $d$-variate problem 
+are given as products of the singular values of univariate problems. 
+
+\bigskip
+
+Consider two Hilbert spaces $\calH_1$ and $\calG_1$ and a 
+compact linear solution operator,
+$
+S_1: \calH_1 \to \calG_1.
+$
+Let $\N$ denotes the set of positive integers,   
+and $\N_0 =\N\cup\{0\}$.  For $d\in \N$, let 
+$$
+\calH_d\,=\,\calH_1\otimes\calH_1\cdots\otimes\calH_1\quad\mbox{and}\quad
+\calG_d\,=\,\calG_1\otimes\calG_1\cdots\otimes\calG_1
+$$
+be the $d$-variate tensor products of the spaces $\calH_1$ and $\calG_1$, respectively. 
+Furthermore, let $S_d$ be the linear tensor product operator,
+$$ 
+S_d=S_1\otimes S_1\otimes \cdots \otimes S_1,
+$$
+on $\calH_d$. 
+In this way, obtain a sequence of compact    
+linear solution operators    
+$$   
+\calS\,=\, \{S_d: \calH_d \to \calG_d\}_{d \in \N}.     
+$$   
+We now consider the problem of 
+approximating $\{S_d(f)\}$ for $f$ from the   
+unit ball of $\calH_d$ by means of algorithms   
+$\{A_{d,n}: \calH_d \to \calG_d\}_{d \in \N,n\in\N_0}$.    
+For $n=0$, we set $A_{d,0}:=0$, and for $n\ge 1$, $A_{d,n}(f)$    
+depends on $n$ continuous    
+linear functionals $L_1(f), L_2(f),\ldots, L_n(f)$, so that   
+$$   
+A_{d,n}(f)=\phi_n(L_1(f),L_2(f),\dots,L_n(f))   
+$$   
+for some $\phi_n:\C^n\to \calG_d$ and $L_j\in \calH_d^*$.  \fh{Do we consider complex-valued linear functionals?}  
+We allow an adaptive choice of $L_1,L_2,\ldots,L_n$ as well as $n$, i.e.,   
+$L_j=L_j(\cdot;L_1(f),L_2(f),\dots,L_{j-1}(f))$ and $n$ can be a   
+function of the $L_j(f)$,    
+see \cite{TWW88} and \cite{NW08} for details.
+The error of a given algorithm $A_{d,n}$ is measured in the worst case setting, 
+which means that we need to deal with  
+$$   
+e(A_{d,n})\,=\,\sup_{\substack{f\in\calH_d \\ \|f\|_{\calH_d}\le1}}   
+\|S_d(f)-A_{d,n}(f)\|_{\calG_d}.   
+$$   
+However, to assess the difficulty of the approximation problem, we would not 
+only like to study the worst case errors of particular algorithms, but 
+consider a more general error measure. To this end, let   
+$$   
+e(n,S_d)\,=\,\inf_{A_{d,n}}\,e(A_{d,n})   
+$$   
+denote the $n$th minimal worst case error,    
+where the infimum is extended over all admissible algorithms $A_{d,n}$. Then    
+the information complexity $n(\varepsilon,S_d)$ is   
+the minimal number $n$ of continuous linear functionals    
+needed to find an algorithm $A_{d,n}$ that approximates   
+$S_d$ with error at most $\varepsilon$. More precisely,    
+we consider the absolute (\ABS) and normalized (\NOR) error criteria   
+in which    
+\begin{align*}   
+ n(\varepsilon,S_d)&=n_{\ABS}(\varepsilon, S_d)\, =   
+\min\{n\,\colon\,e(n,S_d)\le \varepsilon\},\\   
+ n(\varepsilon,S_d)&=n_{\NOR}(\varepsilon,S_d)=   
+\min\{n\,\colon\,e(n,S_d) \le \varepsilon\,\|S_d\|\}.   
+\end{align*}   
+
+It is known from \cite{TWW88} (see also \cite{NW08})   
+that the information complexity is fully determined by    
+the singular values of $S_d$, which    
+are the same as the square roots of the eigenvalues of    
+the compact self-adjoint and positive semi-definite   
+linear   
+operator $W_d=S_d^\ast S_d:\calH_d\rightarrow\calH_d$.    
+We denote these eigenvalues by $\lambda_{d,1}, \lambda_{d,2},\ldots$. Then it is known that 
+the information complexity can be expressed in terms of the eigenvalues $\lambda_{d,j,}$. Indeed, 
+\begin{align}   
+n_{\ABS}(\varepsilon, S_d)   
+&=\min\{n\,\colon\,\lambda_{d,n+1}\le   
+\varepsilon^2\},
+\label{eq:infcomplabs}\\   
+n_{\NOR}(\varepsilon, S_d)&=   
+\min\{n\,\colon\,\lambda_{d,n+1}\le \varepsilon^2 \lambda_{d,1}\}. 
+\label{eq:infcomplnor}     
+\end{align}
+Clearly,    
+$n_{\ABS}(\varepsilon, S_d)=0$ for $\varepsilon\ge   
+\sqrt{\lambda_{d,1}}=\|S_d\|$, and    
+$n_{\NOR}(\varepsilon, S_d)=0$ for $\varepsilon\ge1$.   
+Therefore for $\ABS$ we can restrict ourselves to $\varepsilon\in(0,\|S_d\|)$,   
+whereas for $\NOR$ to $\varepsilon\in(0,1)$.   
+Since $\|S_d\|$ can be arbitrarily large, to deal simultaneously    
+with $\ABS$ and $\NOR$ we consider $\varepsilon\in(0,\infty)$.    
+It is known that $n_{\ABS/\NOR}(\varepsilon,S_d)$ is finite for all   
+$\varepsilon>0$ iff $S_d$ is compact, which justifies our assumption   
+about the compactness of~$S_d$.   
+
+We now recall that the spaces $\calH_d$ and $\calG_d$ are tensor product
+spaces. It is known that the eigenvalues of $W_d$ are then given as product 
+of the eigenvalues of the operator $W_1=S_1^\ast S_1:\calH_1\rightarrow\calH_1$, i.e.,
+\begin{equation}\label{eq:productform}
+\lambda_{d,j}=\prod_{\ell=1}^d \tlambda_{j_\ell}
+\end{equation}
+Without loss of generality, we assume that the $\tlambda_j$ are ordered, i.e., $\tlambda_1\ge \tlambda_2 \ge \cdots$. The map $j \in \naturals \mapsto (j_1, \ldots, j_d) \in \naturals^d$ exists but does not have a simple explicit form, which makes the tractability analysis challenging.
+   
+Equations \eqref{eq:infcomplabs}, \eqref{eq:infcomplnor}, and \eqref{eq:productform} enable us to directly relate the 
+eigenvalues $\tlambda_{j,d}$ to the information complexity $n_{\ABS/\NOR}(\varepsilon, S_d)$. As mentioned above, several notions of algebraic or exponential tractability have been defined in terms of how $n_{\mathsf{y}}(\varepsilon, S_d)$ is related to $T(d,\mathsf{z})$, where 
+\begin{equation*}
+\mathsf{x} \in \{\ALG, \EXP \}, \quad
+\mathsf{y} \in \{\ABS, \NOR \}, \quad
+\mathsf{z} = \begin{cases} \max(1,\varepsilon^{-1}), & \mathsf{x} = \ALG, \\
+1+\log\, \max(1,\varepsilon^{-1}), & \mathsf{x} = \EXP.\end{cases}
+\end{equation*}
+These definitions are given in Table \ref{table:tractDef}.
+
+\begin{table}
+{\normalsize
+    \caption{Different notions of tractability}
+\begin{gather*}
+\begin{array}{rll}
+\multicolumn{1}{l}{\calS \text{ is \ldots}} \\[2ex]
+\left . \begin{array}{rl}
+\text{strongly polynomially tractable (\SPT)} \\
+\text{polynomially tractable (\PT)} \\
+\text{quasi-polynomially tractable (\QPT)}
+\end{array} \right\} & 
+\begin{array}{l}
+\text{if }
+n_{\texttt{y}}(\varepsilon,S_d) \le T(d,\mathsf{z}) \\ \hspace{8ex}\forall d \in \naturals, \, \varepsilon \in (0,\infty)
+\end{array}\\
+(s,t)\text{-weakly tractable {\large(}$(s,t)$-\WT {\large)}} \phantom{\}\}} 
+&
+\text{if } \displaystyle \lim_{d+\varepsilon^{-1}\to\infty}\   
+\frac{\log\,\max(1,n_{\mathsf{y}}(\varepsilon,S_d))}{T(d,\mathsf{z})}\,=\,0 \\
+\text{uniformly weakly tractable (\UWT)} \phantom{\}\}} 
+&
+\text{if $(s,t)$-\WT for all } s, t
+\\[2ex]
+ & \multicolumn{1}{r}{\text{\ldots in the }\mathsf{x} \text{ case for the } \mathsf{y} \text{ error criterion}}
+\end{array} \\[2ex]
+\begin{array}{r@{\quad}l}
+ \text{Notion} & T(d,\mathsf{z}) \\
+ \toprule
+      \SPT & C \mathsf{z}^q \\
+      \PT& C d^p \mathsf{z}^q \\
+      \QPT& C\,\exp\bigl(p\,(1+\log\,d)(1+\log\, \mathsf{z})\bigr) \\
+      $(s,t)$-\WT & d^{\,t}+\mathsf{z}^{s}
+\end{array}
+\end{gather*}
+    \label{table:tractDef}
+    }
+\end{table}
+
+\fh{I rewrote the definitions.  We can get the old ones back if you want.}
+\iffalse
+
+The following list gives an overview of various tractability notions. 
+\begin{itemize}
+\item   
+{\bf{$\calS$ is \EXP-\SPT-\ABS/\NOR}} (strongly polynomially   
+tractable in the exponential case for the absolute or normalized error   
+criterion) iff there are non-negative $C$ and $p$ such that   
+for all\ $d\in\N,\ \varepsilon>0$ we have    
+$$   
+n_{\ABS/\NOR}(\varepsilon,S_d)\le C\,(   
+1+\log\,\max(1,\varepsilon^{-1}))^p.   
+$$   
+The infimum of $p$ satisfying the bound above is denoted by $p^*$   
+and is called the exponent of \EXP-\SPT-\ABS/\NOR.    
+\newline \qquad   
+\item   
+{\bf{$\calS$ is \EXP-\PT-\ABS/\NOR}} (polynomially   
+tractable in the exponential case for the absolute or normalized error   
+criterion) iff there are non-negative $C,p$, and $q$ such that   
+for all\ $d\in\N,\ \varepsilon>0$ we have    
+$$   
+n_{\ABS/\NOR}(\varepsilon,S_d)\le C\,d^{\,q}\,   
+(1+\log\,\max(1,\varepsilon^{-1}))^p.   
+$$   
+\vskip 0.5pc   
+\item   
+{\bf{$\calS$ is \EXP-\QPT-\ABS/\NOR}} (quasi-polynomially   
+tractable in the exponential case for the absolute or normalized error   
+criterion) iff there are non-negative $C$ and $p$ such that   
+for all \ $d\in\N,\ \varepsilon>0$ we have    
+$$   
+n_{\\ABS/\NOR}(\varepsilon,S_d)\le   
+C\,\exp\left(p\,(1+\log\,d)(1+\log(1+\log\,\max(1,\varepsilon^{-1})))\right).   
+$$    
+The infimum of $p$ satisfying the bound above is denoted by $p^*$   
+and is called the exponent of \EXP-\QPT-\ABS/\NOR.    
+\newline \qquad    
+\item   
+{\bf{$\calS$ is \EXP-$(s,t)$-\WT-\ABS/\NOR}} ($(s,t)$-weakly    
+tractable in the exponential case for the absolute or normalized error   
+criterion) for positive $s$ and $t$ iff    
+$$   
+\lim_{d+\varepsilon^{-1}\to\infty}\   
+\frac{\log\,\max(1,n_{\ABS/\NOR}(\varepsilon,S_d))}{d^{\,t}+   
+(1+\log\,\max(1,\varepsilon^{-1}))^{s}}\,=\,0.   
+$$    
+\vskip 0.5pc     
+\item    
+{\bf{$\calS$ is \EXP-\UWT-\ABS/\NOR}} (uniformly weakly tractable   
+in the exponential case for the absolute or normalized error   
+criterion) iff    
+{\bf{$\calS$ is \EXP-$(s,t)$-\WT-\ABS/\NOR}} for all positive $s$ and $t$.   
+\newline \qquad   
+\end{itemize} 
+\fi
+
+A recent article \cite{KW18} provides  necessary and sufficient conditions 
+on the eigenvalues $\lambda_{d,j}$ of $W_d$ for the various tractability 
+notions above. For the special case of linear tensor product spaces 
+considered here, it is natural 
+to ask for conditions on the eigenvalues $\tlambda_j$ of $W_1$ such that we obtain 
+the different kinds of exponential tractability. For results on algebraic tractability 
+for tensor product spaces, see again \cite{NW08}--\cite{NW12} and the articles cited therein. 
+The notion of $(s,t)$-\WT was introduced in \cite{SW15}, and \UWT was introduced in \cite{S13}. 
+See also \cite{WW17} and \cite{KW18} for results on $(s,t)$-\WT and \UWT in the algebraic sense.
+
+
+Finding  
+necessary and sufficient conditions on the $\tlambda_j$ for the different kinds of exponential 
+tractability turns out to be a technically difficult question. Here we give first results for the case 
+where only finitely many eigenvalues $\tlambda_j$ are nonzero. The more general case, 
+where we allow infinitely many positive eigenvalues will be dealt with in a future article. 
+%FH The results for finitely many positive eigenvalues will be used as lower bounds for the general case. 
+
+
+\section{Results}
+\label{sec:results}
+ 
+In this section we show results on tractability conditions in terms of the eigenvalues of the 
+operator $W_1$ in the case where the number of positive eigenvalues is finite. 
+
+Note that, if all of the $\tlambda_j$ equal zero, then the operators $S_d$ are all zero. Furthermore, 
+if only $\tlambda_1>0$ and $\tlambda_2=\tlambda_3=\cdots =0$ (remember that the $\tlambda_j$ are ordered), 
+it can be shown that $n_{\ABS/\NOR}(\varepsilon,S_d)=1$ for all $d\ge 1$. Hence, the problem is 
+interesting only if at least two of the $\tlambda_j$ are positive, which assume from now 
+on. 
+
+Before we state our main result, we state two technical lemmas and theorem proved elsewhere.  The first lemma is well known.
+
+\begin{lemma} \label{sSumLem}
+For any $n \in \N$  and $a_i \ge 0$ we have
+\begin{itemize}
+\item For $s\ge1$,
+\begin{equation*}
+\frac1{n^{s-1}} (a_1 + \cdots + a_n)^s
+\le a_1^s + \cdots + a_n^s \le
+(a_1 + \cdots + a_n)^s.
+\end{equation*}
+\item For $s\le1$
+\begin{equation*}
+\qquad
+\qquad
+(a_1 + \cdots + a_n)^s
+\le a_1^s + \cdots + a_n^s \le n^{s-1}(a_1 + \cdots + a_n)^s.
+\end{equation*}
+\end{itemize}
+\end{lemma}
+
+
+\begin{lemma} \label{binomBdLem} For all $k, n \in \N$ with $k < n$, it follows that
+\begin{equation*}
+      \max\left\{\left(\frac nk\right)^k,  \left(\frac n{n-k}\right)^{n-k} \right\}
+      \le \binom{n}{k} \le \min\left\{\left(\frac {\me n}k\right)^k,  \left(\frac {\me n}{n-k}\right)^{n-k} \right\}.
+\end{equation*}
+\end{lemma}
+\begin{proof}
+It is easy to see that
+                \begin{align*}
+                \left(\frac nk\right)^k  = \frac{n \times \cdots \times n}{k \times \cdots \times k}
+                & \le \frac{n (n-1) \cdots (n - k+1)}{k (k-1)\times \cdots \times 1}
+                 =\binom{n}{k} = \binom{n}{n-k} \\
+                & \le \frac{n^k}{k!} = \left(\frac nk\right)^k \frac{k^k}{k!} \le  \left(\frac {\me n}k\right)^k,
+                \end{align*}
+and the estimates of the lemma follow.$\hfill\Box$
+\end{proof}
+
+\begin{theorem} \cite{KW18} \label{thm:general}   
+$\calS$ is \EXP-$(s,t)$-\WT-\ABS/\NOR iff   
+\begin{equation}\label{eq:EXP-WT}   
+\sup_{d\in\N} \SEWT (d,s,t,c)    
+ < \infty\quad \forall c>0,   
+\end{equation}   
+where   
+\[   
+ \SEWT (d,s,t,c):=\exp (-cd^{\,t})\,\sum_{j=1}^\infty    
+\exp \left(-c \left[   
+1+   
+\log\left(2\,\max\left(1,\frac{{\rm   
+        CRI}_d}{\lambda_{d,j}}\right)\right)   
+\right]^s \right),   
+\]   
+where 
+$$   
+ \mathrm{CRI}_d=\begin{cases}   
+                 1 &\mbox{for $\ABS$},\\   
+                 \lambda_{d,1} &\mbox{for $\NOR$}.   
+                 \end{cases}   
+$$  
+\end{theorem}   
+
+
+
+We now state and prove our main result in this article.
+\begin{theorem}\label{thm:main}
+Let
+$$
+\tlambda_1\ge\cdots\ge\tlambda_m>\tlambda_{m+1}=\cdots=0\ \ \
+\mbox{for some}\ \ m\ge2.
+$$
+\EXP-$(s,t)$-\WT-\ABS holds iff one of the following conditions is true:
+\begin{itemize}
+\item $t>1$ \ \ \mbox{or}
+\item $t\le 1$, $s>1$, $\tlambda_1\le1$, and $\tlambda_2<1$.
+\end{itemize}
+\EXP-$(s,t)$-\WT-\NOR holds iff one of the following conditions is true:
+\begin{itemize}
+\item $t>1$ \ \ \mbox{or}
+\item $t\le 1$, $s>1$, and $\tlambda_1>\tlambda_2$.
+\end{itemize}
+Furthermore, \EXP-\UWT, \EXP-\QPT, \EXP-\PT, and \EXP-\SPT do not hold under any conditions.
+
+\end{theorem}
+
+\begin{proof}
+
+We know from Theorem \ref{thm:general} that \EXP-$(s,t)$-\WT-\ABS holds iff
+
+        \begin{equation} \label{EXPWTcond}
+        \sup_{d \in \naturals}  \SEWT(d,s,t ,c) < \infty \quad \forall c>0,\\
+        \end{equation}
+        where
+        \begin{align}
+        \nonumber
+        \lefteqn{\SEWT(d,s,t,c )} \\
+        \label{SEWTSingSum}
+         & :=  \sum_{j=1}^\infty \exp\left( -c \left \{d^t + \left [ \log(2\me) + 
+         \log \left(\max\left(1, \lambda_{d,j}^{-1} \right) \right) \right]^s \right \}\right) \\
+         \label{SEWTmultisum}
+        &=  \sum_{j_1=1}^m \cdots   \sum_{j_d=1}^m   \exp\left( -c \left \{ d^t + 
+        \left [ \log \left(2 \me \max\left(1, \prod_{\ell = 1}^d \tlambda_{j_\ell}^{-1} \right) \right) \right]^s  \right\} \right).
+        \end{align}
+
+
+
+We consider first a number of cases depending on $t,s,\tlambda_1$ and
+        $\tlambda_2$ and verify first when \EXP-$(s,t)$-\WT-\ABS holds or does
+        not hold.  The corresponding proofs for \EXP-$(s,t)$-\WT-\NOR then follow routinely.
+
+
+\paragraph{\textit{Case 1.} $t>1 \implies $ \EXP-$(s,t)$-\WT-\ABS}
+
+        There are only $m^d$ nonzero eigenvalues,
+$\lambda_{d,j}$, so it follows that
+        \begin{align*}
+        \sup_{d \in \naturals}
+\SEWT(d,s,t,c )
+&\le \sup_{d \in \naturals} m^d \exp\left( -c
+d^{\,t}  \right) \\
+        & = \sup_{d \in \naturals}  \exp\left(d \log(m) -c
+d^{\,t}  \right) < \infty \quad \forall c > 0.
+        \end{align*}
+        This argument requires $t$ strictly greater than one
+for $m\ge2$ because of the requirement of a finite supremum
+for all positive $c$.
+
+\paragraph{\textit{Case 2.} $t\le 1, \ s > 1,  \ \tlambda_1 \le 1, \ \& \ \tlambda_2< 1 \implies$ \EXP-$(s,t)$-\WT-\ABS} \label{Case111g} 
+
+There are a total of $m^2$ terms of the form $\prod_{\ell = 1}^d \tlambda_{j_\ell}^{-1}$ for $j_1, \ldots, j_d \in \{1, \ldots, m\}$ in the multi-sum in \eqref{SEWTmultisum}.  For $k = 0, \ldots, d$ there are $(m-1)^k\binom{d}{k}$ of these terms containing the factor of $\tlambda_1^{-1}$ exactly $d-k$ times.  Such terms are bounded above below by $\tlambda_2^{-k}$. Dropping $\log(2\,e)$ in \eqref{SEWTmultisum}, we obtain
+$$
+\SEWT(d,s,t,c ) \le \exp(-cd^{\,t})\,\sum_{k=0}^d\binom{d}{k}
+\,(m-1)^k\,\exp\left(-c\,\bigl[\log(\tlambda_{2}^{-k})\bigr]^s\right).
+$$
+We bound
+$\binom{d}{k}$ by $(ed/k)^k$ due to Lemma \ref{binomBdLem}. Hence, we have
+\begin{align*}
+\SEWT(d,s,t,c) & \le 1 + \exp(-cd^{\,t})\,  d\,
+\max_{k=1,\dots,d}\,\exp(f(k)) \\
+& \le 1 +  \exp\bigl(-cd^{\,t} + \log(d) + f(k_{\max})\bigr),
+\end{align*}
+where
+\begin{align*}
+f(k)&=k+k\log(d/k)+k\log(m-1)-ck^s\bigl[\log(\tlambda_2^{-1})\bigr]^s, \\
+f'(k)&= \log(d/k)+ \log(m-1)- c s k^{s-1}\bigl[\log(\tlambda_2^{-1})\bigr]^, \\
+f(k_{\max})& = \max_{k\in[1,d]}f(k)  \ge \max_{k=1,\dots,d}f(k).
+\end{align*}
+For $d$ large enough, we have
+\begin{align*}
+f'(1)&= \log(d) +\log(m-1)- c s(\log(\tlambda_2^{-1}))^s > 0,\\
+f'(d)&= \log(m-1)-c s d^{s-1}(\log(\tlambda_2^{-1}))^s < 0,
+\end{align*}
+hence,
+the maximum occurs in the interior.  By setting the $f'(k)=0$, we obtain
+\begin{align*}
+0  & = \log(d/k_{\rm max}) + \log(m-1)-
+csk_{\rm max}^{s-1}(\log(\tlambda_2^{-1}))^s, \\
+f(k_{\rm max})&=k_{\rm max}+k_{\rm max}\log(d/k_{\rm max})
++k_{\rm max}\log(m-1)-ck_{\rm
+        max}^{s}\left(\log(\tlambda_2^{-1})\right)^s,\\
+&= k_{\rm max}+c\,(s-1)\,k_{\rm
+        max}^{s}\left(\log(\tlambda_2^{-1})\right)^s.
+\end{align*}
+
+The nonlinear equation defining $k_{\max}$ above implies that
+\begin{align*}
+k_{\rm max} &=
+\mathcal{O}\left(\left(\log(d)\right)^{1/(s-1)}\right),\\
+f(k_{\rm max})&=
+\mathcal{O}\left( \left(\log(d)\right)^{s/(s-1)}\right).
+\end{align*}
+Combining these estimates we conclude that
+\begin{multline*}
+\sup_{d\in \naturals}\SEWT(d,s,t,c )
+\\
+\le 1 + \sup_{d\in\naturals}
+\exp\left(-cd^{\,t}+\log(d)+ \mathcal{O}\left((\log(d))^{s/(s-1)}\right)   \right)<\infty \
+\ \forall\,c>0.
+\end{multline*}
+Hence, we have \EXP-$(s,t)$-\WT-\ABS in this case.
+
+\paragraph{\textit{Case 3.} $t\le 1 \ \&  \ \tlambda_1 > 1 \implies$ NO \EXP-$(s,t)$-\WT-\ABS} \label{Case111f}
+
+        Choose the smallest non-negative $r$ such that $\tlambda_2 \ge
+        \tlambda_1^{-r}$, and for every $d > r+2$, let $k = \lfloor
+        d/(r+2) \rfloor$.
+        Then it follows that
+        \begin{equation*}
+        k \le \frac{d}{r+2}, \qquad d - k - kr \ge d\left[1 -\frac{r+1}{r+2} \right] = \frac{d}{r+2}.
+        \end{equation*}
+        Focusing on just these eigenvalues of the form
+        \begin{equation*}
+        \lambda_{d,j} = \tlambda_1^{d-k}  \tlambda_2^{k} =  \tlambda_1^{d-k-kr}  \tlambda_1^{kr}\tlambda_2^{k} \ge
+        \tlambda_1^{d-k-kr}  \tlambda_1^{kr} \tlambda_1^{-kr} =\, \tlambda_1^{d-k-kr} \ge \tlambda_1^{d/(r+2)} \,\ge\, 1,
+        \end{equation*}
+        it follows that $\SEWT(d,s,t,c )$ has the following lower
+        bound via \eqref{SEWTSingSum} and Lemma \ref{binomBdLem}.
+        \begin{align*}
+        \nonumber
+        \SEWT(d,s,t,c )
+        & \ge \binom{d}{k} \exp\left( -c \left \{d^t + \left [ \log(2\me) + \log \left(\max\left(1, \lambda_{d,j}^{-1} \right) \right) \right]^s \right \}\right) \\
+        & \ge \left(\frac{d}{k}\right)^k \exp\left( -c \left \{d^t + \left [ \log(2\me) \right]^s \right \}\right) \\
+        & \ge \left(r+2\right)^{d/(r+2) - 1} \exp\left( -c \left \{d^t + \left [ \log(2\me) \right]^s \right \}\right) \\
+        & = \frac{\bigl[(r+2)^{1/(r+2)}\bigr]^d}{r+2} \exp\left( -c \left \{d^t + \left [ \log(2\me) \right]^s \right \}\right).
+        \end{align*}
+        Since $(r+2)^{1/(r+2)} > 1$ and $t \le 1$, then $\SEWT(d,s,t,c ) \to \infty$ for small $c$ as $d \to \infty$, regardless of the value of $s$.
+        Hence, we do not have \EXP-$(s,t)$-\WT-\ABS.
+
+
+\paragraph{\textit{Case 4.} $t\le 1 \ \&  \ \tlambda_1\ge\tlambda_2\ge1 \implies$ NO \EXP-$(s,t)$-\WT-\ABS }
+ We have $2^d$ eigenvalues no smaller than $1$. Therefore
+        $$
+        \SEWT(d,s,t,c )\ge 2^d\exp\left(-c(d^t+[\log(2e)]^s)\right)
+        \to \infty
+        $$
+        for small $c$ independently of $s$.
+        Hence, we do not have \EXP-$(s,t)$-\WT-\ABS.
+
+
+
+\paragraph{\textit{Case 5.} $t\le 1 \ \&  \ s \le 1 \implies$ NO \EXP-$(s,t)$-\WT-\ABS} \label{Case111e} 
+
+We have $2^d$ eigenvalues no smaller than $\tlambda_2^d$.
+We then have
+\begin{align*}
+      \SEWT(d,s,t,c) & \ge 2^d
+            \exp\left(-c\left(d^t +
+            \left[\log\left(2\me \max(1,\tlambda_2^{-d})
+            \right)\right]^s\right)\right)\\
+      & = 
+      \exp\left(d \log(2) - cd^t -c\left[\log (2\me) +d\log \, \max(1,\tlambda_2^{-1})\right]^s\right).
+\end{align*}
+Since $s,t\le 1$ and since $c$ can be arbitrarily small,
+we see that this latter term is not bounded for $d\rightarrow\infty$.
+        Hence, we do not have \EXP-$(s,t)$-\WT-\ABS.
+
+{}From the analysis of all these cases, we see that
+\EXP-$(s,t)$-\WT-\ABS holds only when $t>1$, and
+when $t\le 1$, $s>1$,
+$\tlambda_1\le1$, and $\tlambda_2<1$. This completes the proof for \ABS.
+
+%FJH think that I have simplified this proof.
+\iffalse
+Consider the eigenvalues of the form  $\tlambda_1^k\tlambda_2^{d-k}$
+for $k\in\{0,\ldots,d\}$.
+We then have
+\begin{align*}
+      \lefteqn{\SEWT(d,s,t,c) \ge
+            \sum_{k=0}^d {d \choose k}
+            \exp\left(-c\left(d^t +
+            \left[\log\left(2\me \tlambda_1^{-k}\tlambda_2^{-(d-k)}
+            \right)\right]^s\right)\right)}\\
+      & = \exp(-cd^t)\sum_{k=0}^d {d \choose k}
+      \exp\left(-c\left[\log (2\me) +
+      k\log\tlambda_1^{-1}+(d-k)\log\tlambda_2^{-1}\right]^s\right).
+\end{align*}
+Then, using Lemma \ref{binomBdLem} and Lemma \ref{sSumLem}, it follows that
+        \begin{align*}
+                \lefteqn{\SEWT(d,s,t,c)\ge\exp(-cd^t)}\\
+                &\qquad \times\sum_{k=0}^d {d \choose k}\exp\left(-c\left(\left[
+                \log (2\me)\right]^s +
+                \left[k\log\tlambda_1^{-1}\right]^s+\left[(d-k)\log\tlambda_2^{-1}\right]^s\right)\right)\\
+                &\ge \exp(-cd^t)\\
+                &\qquad\times {d \choose \lfloor d/2 \rfloor}
+                \exp\left(-c\left(\left[\log (2\me)\right]^s +
+                \left[\lfloor d/2 \rfloor\log\tlambda_1^{-1}\right]^s+
+                \left[\lceil d/2 \rceil\log\tlambda_2^{-1}\right]^s\right)\right)\\
+                &\ge \exp(-cd^t)\\
+                &\times\left(\frac{d}{\lfloor d/2 \rfloor}
+                \right)^{\lfloor d/2 \rfloor}
+                \exp\left(-c\left(\left[\log (2\me)\right]^s +
+                \left[\lfloor d/2 \rfloor\log\tlambda_1^{-1}\right]^s+
+                \left[\lceil d/2 \rceil\log\tlambda_2^{-1}\right]^s\right)\right)\\
+                &\ge \exp(-cd^t)\\
+                &\times\left(\frac{d}{d/2}\right)^{d/2-1}
+                \exp\left(-c\left(\left[\log (2\me)\right]^s +
+                \left[\lfloor d/2 \rfloor\log\tlambda_1^{-1}\right]^s+
+                \left[\lceil d/2 \rceil\log\tlambda_2^{-1}\right]^s\right)\right)\\
+                &= \exp(-cd^t)\\
+                &\qquad\times 2^{d/2-1}
+                \exp\left(-c\left(\left[\log (2\me)\right]^s +
+                \left[\lfloor d/2 \rfloor\log\tlambda_1^{-1}\right]^s+
+                \left[\lceil d/2 \rceil\log\tlambda_2^{-1}\right]^s\right)\right)\\
+                &=\exp(-cd^t)\, \frac{1}{2}\\
+                &\qquad\times
+                \exp\left(d\log(\sqrt{2})-c\left(\left[\log (2\me)\right]^s +
+                \left[\lfloor d/2 \rfloor\log\tlambda_1^{-1}\right]^s+
+                \left[\lceil d/2 \rceil\log\tlambda_2^{-1}\right]^s\right)\right).
+        \end{align*}
+        Since $s,t\le 1$ and since $c$ can be arbitrarily small,
+        we see that the latter term is not bounded for $d\rightarrow\infty$.
+        Hence, we do not have \EXP-$(s,t)$-\WT-\ABS in this case.
+
+{}From the analysis of all these cases, we see that
+\EXP-$(s,t)$-\WT-\ABS holds only when $t>1$, and
+when $t\le 1$, $s>1$,
+$\tlambda_1\le1$, and $\tlambda_2<1$. This completes the proof for \ABS.
+\fi
+
+\vskip 1pc
+We turn to \NOR. This corresponds to considering the ratios
+$\lambda_{d,1}/\lambda_{d,j}$ which are at least $1$.
+We know that \EXP-$(s,t)$-\WT-\NOR holds iff
+$$
+\sup_{d \in \naturals}  \SEWT(d,s,t ,c) < \infty \quad \forall c>0,
+$$
+where
+\begin{eqnarray*}
+\SEWT(d,s,t,c )&=&
+\sum_{j=1}^\infty \exp\left( -c \left \{d^t +
+\left [ \log(2\me) + \log
+  \left(\frac{\lambda_{d,1}}{\lambda_{d,j}}\right)
+\right) \right]^s\right) \\
+&=&  \sum_{j_1=1}^\infty \cdots
+\sum_{j_d=1}^\infty  \exp\left( -c \left\{ d^t +
+\left [ \log \left(2 \me \prod_{\ell = 1}^d
+    \frac{\tlambda_1}{\tlambda_{j_\ell}}
+ \right) \right]^s \right\}\right).
+ \end{eqnarray*}
+Hence, it is the same as \ABS if we assume that $\tlambda_1=1$.
+Using the results for \ABS with $\tlambda_1=1$ we obtain the results
+for \NOR. This completes the proof for \EXP-$(s,t)$-\WT.
+
+\bigskip
+
+Regarding all other tractability notions,
+we know from above that we do not have \EXP-$(s,t)$-\WT when $t\le 1$ and $s\le 1$. Since \EXP-$(s,t)$-\WT is a weaker tractability
+notion than all other tractability notions considered here, we cannot have any other stronger kind of tractability.
+
+This completes the proof of Theorem \ref{thm:main}.$\hfill\Box$
+
+\end{proof}
+
+
+%
+\begin{acknowledgement}
+The authors thank the MATRIX institute in Creswick, VIC, Australia, and its staff for supporting their 
+stay during the program ``On the Frontiers of High-Dimensional Computation'' in June 2018. 
+
+F.~J.~Hickernell gratefully acknowledges support by the United States National Science Foundation grant DMS-1522687.
+
+P.~Kritzer gratefully acknowledges support by the Austrian Science Fund (FWF): Project F5506-N26, which is part
+of the Special Research Program ``Quasi-Monte Carlo Methods: Theory and Applications''. 
+
+H.~Wo\'{z}niakowski gratefully acknowledges the support of the National Science Centre, Poland, based on the decision 
+DEC-2017/25/B/ST1/00945.
+\end{acknowledgement}
+%
+
+
+
+\begin{thebibliography}{99.}%
+
+\bibitem{KW18} Kritzer, P., Wo\'{z}niakowski, H.: Simple characterizations of exponential tractability   
+for linear multivariate problems. Submitted (2018)
+
+\bibitem{NW08} 
+Novak, E., Wo\'zniakowski, H.: Tractability    
+of Multivariate Problems, Volume I: Linear Information. EMS, Z\"urich (2008)   
+   
+\bibitem{NW10}   
+Novak, E., Wo\'zniakowski, H.: Tractability    
+of Multivariate Problems, Volume II: Standard Information    
+for Functionals. EMS, Z\"urich (2010)   
+   
+\bibitem{NW12}   
+Novak, E., Wo\'zniakowski, H.: Tractability    
+of Multivariate Problems, Volume III:    
+Standard Information for Operators. EMS, Z\"urich (2012)   
+
+\bibitem{S13}   
+Siedlecki, P.: Uniform weak tractability.   
+J. Complexity, 29, 438--453 (2013)   
+
+\bibitem{SW15} Siedlecki, P., Weimar, M.: Notes on $(s,t)$-weak tractability: 
+a refined classification of problems with (sub)exponential information complexity.
+J. Approx. Theory 200, 227--258 (2015) 
+
+\bibitem{TWW88}   
+Traub, J.F., Wasilkowski, G.W., Wo\'zniakowski, H.:   
+Information-Based Complexity. Academic Press, New York (1988)   
+
+\bibitem{WW17} Werschulz, A., Wo\'{z}niakowski, H.: A new    
+characterization of $(s,t)$-weak tractability. J. Complexity 38, 68--79 (2017) 
+
+\end{thebibliography}
+\end{document}
